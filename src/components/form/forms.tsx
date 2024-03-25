@@ -18,7 +18,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Checkbox } from "../ui/checkbox";
-import { useEditForm } from "./EditForm";
+import { useEditForm } from "./edit-form";
 
 export type FormReturn = UseFormReturn<
   FieldValue<FieldValues>,
@@ -26,7 +26,7 @@ export type FormReturn = UseFormReturn<
   undefined
 >;
 
-type ReactHookForm = {
+export type ReactHookForm = {
   reactHookForm: FormReturn;
 };
 
@@ -142,7 +142,7 @@ export function FormInput({
   );
 }
 
-function DetailsInput({ value }: { value: string }) {
+export function DetailsInput({ value }: { value: string }) {
   return (
     <div className="flex h-10 w-full rounded-md text-sm ring-offset-background">
       <p className="mt-[2px] ml-[1px] text-gray-500">

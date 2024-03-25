@@ -2,14 +2,7 @@ import { Form } from "../ui/form";
 import { createContext, useContext, useState } from "react";
 import { FormReturn } from "./forms";
 import { Button } from "../ui/button";
-
-// type EditFormProps = {
-//   children: React.ReactNode;
-//   schema: FormSchema;
-//   onSubmit: (values: z.infer<FormSchema>) => void;
-//   defaultValues: z.infer<FormSchema>;
-//   isEdit: boolean;
-// };
+import React from "react";
 
 const EditFormContext = createContext<EditFormContextProps | undefined>(
   undefined
@@ -24,9 +17,11 @@ interface EditFormContextProps {
 
 export function EditForm({
   children,
+  className,
   form,
 }: {
   children: React.ReactNode;
+  className?: string;
   form: FormReturn;
 }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -56,22 +51,67 @@ export function EditForm({
 
   return (
     <EditFormContext.Provider value={contextValue}>
-      <Button onClick={isEditing ? cancelEditing : startEditing}>Edit</Button>
+      {/* <Button onClick={isEditing ? cancelEditing : startEditing}>Edit</Button> */}
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(saveChanges)}
-          className="grid grid-cols-2 gap-4"
+          className={className}
         >
           {children}
           <Button type="button" onClick={() => console.log(form.getValues())}>
             check
           </Button>
-          {isEditing && <Button type="submit">Save</Button>}
+          {/* {isEditing && <Button type="submit">Save</Button>} */}
         </form>
       </Form>
     </EditFormContext.Provider>
   );
 }
+
+const EditFormSubmitButton = React.forwardRef<
+  React.ElementRef<typeof Button>,
+  React.ComponentPropsWithoutRef<typeof Button>
+>(({ className, ...props }, ref) => {
+  return <Button type={"submit"} className={className} ref={ref} {...props} />;
+});
+EditFormSubmitButton.displayName = "EditFormSubmitButton";
+
+const EditFormButton = React.forwardRef<
+  React.ElementRef<typeof Button>,
+  React.ComponentPropsWithoutRef<typeof Button>
+>(({ className, ...props }, ref) => {
+  const { startEditing, isEditing } = useEditForm();
+  return (
+    <Button
+      type={"button"}
+      className={className}
+      onClick={startEditing}
+      disabled={isEditing}
+      ref={ref}
+      {...props}
+    />
+  );
+});
+EditFormButton.displayName = "EditFormButton";
+
+const EditFormCancelButton = React.forwardRef<
+  React.ElementRef<typeof Button>,
+  React.ComponentPropsWithoutRef<typeof Button>
+>(({ className, ...props }, ref) => {
+  const { cancelEditing } = useEditForm();
+  return (
+    <Button
+      type={"button"}
+      className={className}
+      onClick={cancelEditing}
+      ref={ref}
+      {...props}
+    />
+  );
+});
+EditFormCancelButton.displayName = "EditFormCancelButton";
+
+export { EditFormSubmitButton, EditFormButton, EditFormCancelButton };
 
 // export function EditForm({
 //   children,
